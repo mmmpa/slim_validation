@@ -7,6 +7,16 @@ RSpec.describe Entry, type: :model do
     it { expect { create(:entry, slim_proc: invalid_slim) }.to raise_exception(ActiveRecord::RecordInvalid) }
     it { expect { create(:entry, slim_attribute: invalid_slim) }.to raise_exception(ActiveRecord::RecordInvalid) }
     it { expect { create(:entry, slim_scope: invalid_slim) }.to raise_exception(ActiveRecord::RecordInvalid) }
+
+    context 'with error storer' do
+      let(:entry) do
+        entry = build(:entry, slim_scope: invalid_slim)
+        entry.valid?
+        entry
+      end
+      it { expect(entry.slim_error).to be_truthy }
+    end
+
   end
 
   context 'when added valid slim' do
@@ -38,6 +48,11 @@ RSpec.describe Entry, type: :model do
       let(:entry) { create(:entry, slim_scope: valid_slim) }
       it { expect(entry).to be_a(Entry) }
       it { expect(entry.html).to eq('<header><h1>local value</h1></header><section><p>content</p></section><footer><p>2010/05/09</p></footer>') }
+    end
+
+    context 'with error storer' do
+      let(:entry) { create(:entry, slim_scope: valid_slim) }
+      it { expect(entry.slim_error).to be_nil }
     end
   end
 end

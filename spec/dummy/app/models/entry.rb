@@ -1,4 +1,6 @@
 class Entry < ActiveRecord::Base
+  attr_accessor :slim_error
+
   validates :slim,
     slim: {
       allow_blank: true
@@ -31,6 +33,7 @@ class Entry < ActiveRecord::Base
       options: {pretty: false},
       to: :html,
       scope: :record,
+      error: :slim_error,
       allow_blank: true
     }
 
